@@ -1,26 +1,19 @@
-from catboost import CatBoostClassifier
+# импортируем библиотеку для работы со случайными числами
+import random
 
-def load_churn_model(model_path: str):
-    """Загружаем обученную модель оттока.
-    Args:
-        model_path (str): Путь до модели.
-    """
-    try:
-        model = CatBoostClassifier()
-        model.load_model(model_path)
-        print("Model loaded successfully")
-        return model
-    except Exception as e:
-        print(f"Failed to load model: {e}")
-        return None
+# импортируем класс для создания экземпляра FastAPI-приложения
+from fastapi import FastAPI
 
+# создаём экземпляр FastAPI-приложения
+app = FastAPI()
 
-if __name__ == "__main__":
-   
-    
-    # загружаем модель
-    model = load_churn_model(model_path='models/catboost_churn_model.bin')
-    
-    # если загрузка успешна, выводим имена признаков
-    if model is not None:
-        print(f"Model parameter names: {model.feature_names_}")
+# обрабатываем запросы к корню приложения
+@app.get("/")
+def read_root():
+    return {"Hello": "World"}
+
+# обрабатываем запросы к специальному пути для получения предсказания модели
+# временно имитируем предсказание со случайной генерацией score
+@app.get("/api/churn/{user_id}")
+def get_prediction_for_item(user_id: str):
+    return {"user_id": user_id, "score": random.random()}
